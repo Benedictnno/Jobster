@@ -7,10 +7,10 @@ import { logoutUser, toggleSidebar } from "../features/user/userSlice";
 
 const Navbar = () => {
   const { user } = useSelector((store) => store.user);
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const [showLogOut, setShowLogOut] = useState(false);
   function toggle() {
-    dispath(toggleSidebar());
+    dispatch(toggleSidebar());
   }
   return (
     <Wrapper>
@@ -37,7 +37,7 @@ const Navbar = () => {
             <button
               className="dropdown-btn"
               type="button"
-              onClick={() => dispath(logoutUser())}
+              onClick={() => dispatch(logoutUser(" Logging Out..."))}
             >
               Logout
             </button>

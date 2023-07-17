@@ -9,6 +9,8 @@ import {
   handleChange,
 } from "../../features/jobs/JobSlice";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { editJob } from "../../features/jobs/JobSlice";
 
 const AddJobs = () => {
   const {
@@ -23,12 +25,25 @@ const AddJobs = () => {
     isEditing,
     editJobId,
   } = useSelector((store) => store.job);
+
   const dispatch = useDispatch();
   const { user } = useSelector((store) => store.user);
+  const navigate = useNavigate();
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!position || !company || !jobLocation) {
       toast.error("Please fill out all fields");
+      return;
+    }
+    if (isEditing) {
+      dispatch(
+        editJob({
+          jobId: editJobId,
+          job: { position, company, jobLocation, jobType, status },
+        })
+      );
+      navigate("/AllJobs");
       return;
     }
     dispatch(
@@ -40,6 +55,7 @@ const AddJobs = () => {
         status,
       })
     );
+    navigate("/AllJobs");
   }
 
   function handleJobInput(e) {
@@ -50,12 +66,14 @@ const AddJobs = () => {
   }
 
   useEffect(() => {
-    dispatch(
-      handleChange({
-        name: "jobLocation",
-        value: user.location,
-      })
-    );
+    if (!isEditing) {
+      dispatch(
+        handleChange({
+          name: "jobLocation",
+          value: user.location,
+        })
+      );
+    }
   }, []);
 
   return (

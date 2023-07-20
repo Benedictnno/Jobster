@@ -4,6 +4,7 @@ import customFetch from "../../utils/axios";
 import { getUserfromLocalStorage } from "../../utils/localStorage";
 // import { showLoading, hideLoading, getAllJobs } from "../allJobs/allJobSlice";
 import { showLoading, hideLoading, getAllJobs } from "../allJobs/allJobsSlice";
+import AuthHeader from "../../utils/AuthHeader";
 
 const initialState = {
   isLoading: false,
@@ -22,11 +23,7 @@ export const createJob = createAsyncThunk(
   "job/ createJob",
   async (job, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/jobs", job, {
-        headers: {
-          Authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
-        },
-      });
+      const resp = await customFetch.post("/jobs", job);
       thunkAPI.dispatch(clearValues());
       return resp.user;
     } catch (error) {
@@ -45,11 +42,9 @@ export const deleteJob = createAsyncThunk(
   async (jobId, thunkAPI) => {
     // thunkAPI.dispatch(showLoading());
     try {
-      const resp = await customFetch.delete(`/jobs/${jobId}`, {
-        headers: {
-          authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
-        },
-      });
+      const resp = await customFetch.delete(
+        `/jobs/${jobId}`
+      );
       thunkAPI.dispatch(getAllJobs());
       return resp.data.msg;
     } catch (error) {
@@ -63,11 +58,7 @@ export const editJob = createAsyncThunk(
   "job/editJob",
   async ({ jobId, job }, thunkAPI) => {
     try {
-      const resp = await customFetch.patch(`/jobs/${jobId}`, job, {
-        headers: {
-          authorization: `Bearer ${thunkAPI.getState().user.user.token}`,
-        },
-      });
+      const resp = await customFetch.patch(`/jobs/${jobId}`, job);
       thunkAPI.dispatch(clearValues());
       return resp.data;
     } catch (error) {
@@ -75,7 +66,6 @@ export const editJob = createAsyncThunk(
     }
   }
 );
-
 
 const JobSlice = createSlice({
   name: "job",

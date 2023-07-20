@@ -16,7 +16,7 @@ const initialState = {
 
 function Register() {
   const [values, setValues] = useState(initialState);
- const navigate = useNavigate()
+  const navigate = useNavigate();
   const { user, isLoading } = useSelector((store) => store.user);
 
   const dispatch = useDispatch();
@@ -27,13 +27,13 @@ function Register() {
     console.log(`${name} and ${value}`);
     setValues({ ...values, [name]: value });
   };
-   useEffect(() => {
-     if (user) {
-       setTimeout(() => {
-         navigate("/");
-       }, 2000);
-     }
-   }, [user]);
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  }, [user]);
 
   const toggleMember = () => {
     setValues({ ...values, isMember: !values.isMember });
@@ -45,8 +45,6 @@ function Register() {
       toast.error("Please fill out fields");
       return;
     }
-
-   
 
     if (isMember) {
       dispatch(loginUser({ email, password }));
@@ -82,7 +80,19 @@ function Register() {
           handleChange={handleChange}
         />
         <button type="submit" className="btn btn-block" disabled={isLoading}>
-          {isLoading? 'Loading...' : 'Submit'}
+          {isLoading ? "Loading..." : "Submit"}
+        </button>
+        <button
+          type="button"
+          className="btn btn-block btn-hipster"
+          disabled={isLoading}
+          onClick={() =>
+            dispatch(
+              loginUser({ email: "testUser@test.com", password: "secret" })
+            )
+          }
+        >
+          {isLoading ? "Loading..." : "Demo (Read Only)"}
         </button>
 
         <p>

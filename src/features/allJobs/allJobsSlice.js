@@ -28,7 +28,7 @@ export const getAllJobs = createAsyncThunk(
     let url = `/jobs`;
     try {
       const resp = await customFetch.get(url);
-      console.log(resp.data);
+
       return resp.data;
     } catch (error) {
       if (error.response.status === 401) {
@@ -64,11 +64,15 @@ const allJobsSlice = createSlice({
     hideLoading: (state) => {
       state.isLoading = false;
     },
-    handleChange: (state, { payload: { name, value } }) => {
+    handleChanges: (state, { payload: { name, value } }) => {
+      // state.page = 1;
       state[name] = value;
     },
     clearFilters: (state) => {
       return { ...state, ...initialFiltersState };
+    },
+    changePage: (state, { payload }) => {
+      state.page = payload;
     },
   },
   extraReducers: (builder) => {
@@ -79,6 +83,8 @@ const allJobsSlice = createSlice({
       .addCase(getAllJobs.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         state.jobs = payload.jobs;
+        state.numOfPages = payload.numOfPages;
+        state.totalJobs = payload.totalJobs;
       })
       .addCase(getAllJobs.rejected, (state, { payload }) => {
         state.isLoading = false;
@@ -100,6 +106,6 @@ const allJobsSlice = createSlice({
   },
 });
 
-export const { showLoading, hideLoading, handleChange, clearFilters } =
-  allJobsSlice.reducer;
+export const { showLoading,changePage, hideLoading, handleChanges, clearFilters } =
+  allJobsSlice.actions;
 export default allJobsSlice.reducer;

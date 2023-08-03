@@ -45,7 +45,7 @@ const JobsContainer = () => {
         {totalJobs} job{jobs.length > 1 && "s"} found
       </h5>
       <h5>jobs info</h5>
-      <h4>Page number {page}</h4>
+      <h4>Page ({page})</h4>
       <div className="jobs">
         {jobs.map((job) => {
           return <Job key={job._id} {...job} />;

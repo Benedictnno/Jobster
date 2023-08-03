@@ -7,14 +7,22 @@ import { getAllJobs } from "../features/allJobs/allJobsSlice";
 import PageBtnContainer from "./PageBtnContainer";
 
 const JobsContainer = () => {
-  const { jobs, isLoading, page, totalJobs, numOfPages } = useSelector(
-    (store) => store.allJobs
-  );
+  const {
+    jobs,
+    isLoading,
+    page,
+    totalJobs,
+    numOfPages,
+    search,
+    searchType,
+    sort,
+    searchStatus,
+  } = useSelector((store) => store.allJobs);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getAllJobs());
-  }, []);
+  }, [page, search, searchType, sort, searchStatus]);
   if (isLoading) {
     return (
       <Wrapper>
@@ -37,9 +45,9 @@ const JobsContainer = () => {
         {totalJobs} job{jobs.length > 1 && "s"} found
       </h5>
       <h5>jobs info</h5>
+      <h4>Page number {page}</h4>
       <div className="jobs">
         {jobs.map((job) => {
-          ``;
           return <Job key={job._id} {...job} />;
         })}
       </div>

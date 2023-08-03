@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import customFetch from "../../utils/axios";
+import customFetch, { checkForUnauthorizedResponse } from "../../utils/axios";
 import { getUserfromLocalStorage } from "../../utils/localStorage";
 // import { showLoading, hideLoading, getAllJobs } from "../allJobs/allJobSlice";
 import { showLoading, hideLoading, getAllJobs } from "../allJobs/allJobsSlice";
@@ -27,12 +27,7 @@ export const createJob = createAsyncThunk(
       thunkAPI.dispatch(clearValues());
       return resp.user;
     } catch (error) {
-      if (error.response.status === 401) {
-        toast.error("Unauthorized! Logging Out...");
-        setTimeout(() => thunkAPI.dispatch(logoutUser()), 4000);
-        return thunkAPI.rejectWithValue(error.response.date.msg);
-      }
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
 );
@@ -42,14 +37,12 @@ export const deleteJob = createAsyncThunk(
   async (jobId, thunkAPI) => {
     // thunkAPI.dispatch(showLoading());
     try {
-      const resp = await customFetch.delete(
-        `/jobs/${jobId}`
-      );
+      const resp = await customFetch.delete(`/jobs/${jobId}`);
       thunkAPI.dispatch(getAllJobs());
       return resp.data.msg;
     } catch (error) {
       thunkAPI.dispatch(hideLoading());
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return checkForUnauthorizedResponse(error,thunkAPI);
     }
   }
 );
@@ -62,7 +55,7 @@ export const editJob = createAsyncThunk(
       thunkAPI.dispatch(clearValues());
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data.msg);
+      return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
 );
